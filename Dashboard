@@ -544,21 +544,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Booking, EnergyUsage
 from django.contrib.auth import update_session_auth_hash
 
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from .forms import RegisterForm, LoginForm
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required 
-from .models import Feature, Booking
-from .forms import BookingForm
 
-from datetime import datetime, timedelta
-import random
-import json
-from django.contrib.auth.decorators import login_required
-from .models import Booking, EnergyUsage
-from django.contrib.auth import update_session_auth_hash
-# Create your views here.
 def login_register(request):
     if request.method == 'POST':
         if 'register' in request.POST:

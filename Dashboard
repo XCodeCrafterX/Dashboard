@@ -166,7 +166,9 @@
 </body>
 </html>
 
+
 #################################################################################### dashboard.css ####################################################################################
+
 
 body, p, ul, li, a, button, input, textarea, select {
     margin: 0;
@@ -545,65 +547,7 @@ from .models import Booking, EnergyUsage
 from django.contrib.auth import update_session_auth_hash
 
 
-def login_register(request):
-    if request.method == 'POST':
-        if 'register' in request.POST:
-            register_form = RegisterForm(request.POST)
-            login_form = LoginForm()
-            if register_form.is_valid():
-                user = register_form.save(commit=False)
-                user.set_password(register_form.cleaned_data['password'])
-                user.save()
-                return redirect('home')
-        elif 'login' in request.POST:
-            login_form = LoginForm(request, data=request.POST)
-            register_form = RegisterForm()
-            if login_form.is_valid():
-                user = login_form.get_user()
-                login(request, user)
-                return redirect('home')  
-
-    else:
-        register_form = RegisterForm()
-        login_form = LoginForm()
-
-    return render(request, 'login_register.html', {
-        'register_form': register_form,
-        'login_form': login_form,
-    })
-
-def home(request):
-    return render(request, 'home.html')
-def logout(request):
-    return render(request, 'home.html')
-@login_required(login_url='loginregister')
-def bookingservice(request):
-    success = False
-    
-    if request.method == 'POST':
-        service_type = request.POST.get('serviceType')
-        full_name = request.POST.get('fullName')
-        email = request.POST.get('email')
-        date = request.POST.get('date')
-        description = request.POST.get('description')
-        
-     
-        booking = Booking(
-            user=request.user,  
-            service_type=service_type,
-            full_name=full_name,
-            email=email,
-            date=date,
-            description=description
-        )
-        booking.save()
-        
-        success = True
-    
-    return render(request, 'bookingservice.html', {'success': success})
-    
-
-@login_required(login_url='loginregister')
+@login_required(login_url='registerlogin')
 def dashboard(request):
 
     today = datetime.now().date()
@@ -644,7 +588,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 def create_sample_energy_data(user):
-    """Create sample energy data for demonstration"""
+    
     today = datetime.now().date()
     
 
@@ -658,7 +602,7 @@ def create_sample_energy_data(user):
             value=round(value, 2)
         )
 
-@login_required(login_url='loginregister')
+@login_required(login_url='registerlogin')
 def add_energy_data(request):
     if request.method == 'POST':
         date = request.POST.get('date')
@@ -675,7 +619,7 @@ def add_energy_data(request):
     
     return redirect('dashboard')
 
-@login_required(login_url='loginregister')
+@login_required(login_url='registerlogin')
 def edit_booking(request):
     if request.method == 'POST':
         booking_id = request.POST.get('booking_id')
@@ -693,7 +637,7 @@ def edit_booking(request):
     
     return redirect('dashboard')
 
-@login_required(login_url='loginregister')
+@login_required(login_url='registerlogin')
 def update_account(request):
     if request.method == 'POST':
         user = request.user
@@ -733,4 +677,3 @@ class EnergyUsage(models.Model):
 path('dashboard/', views.dashboard, name='dashboard'),
 path('add-energy-data/', views.add_energy_data, name='add_energy_data'),
 path('edit-booking/', views.edit_booking, name='edit_booking'),
-path('update-account/', views.update_account, name='update_account'),
